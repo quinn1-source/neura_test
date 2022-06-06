@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neura | User Profile</title>
+
+  {% load static %}
+
+
+</head>
+<body>
+<main>
+    <section class="content">
+    <div class="user-profile-container">
+        <div class="col-lg-12">
+            <div class="card">
+                <form action="user_profile" method="post" enctype="multipart/form-data" id="myform">
+                    {% csrf_token %}
+                    {% if my_yes == 'yes' %}
+                    <div class="row">
+                        <div class="col-4" style="margin: 10px;">
+                            {% if form.profile_pic %}
+                            <div class="card card-body">
+                                <img class="card-img-top" src="/media/{{ form.profile_pic }}" alt="Card image cap" >
+                            </div>
+                            {% else %}
+                                <img  src="{% static '/img/avatar/avatar-1.png' %}" style="height: 150px; margin-left: 20px">
+                            {% endif %}
+                        </div>
+                        <div class="col-4" style="margin: 10px;">
+                            <label>Select Profile Pic</label>
+                            <input type="file" name="profile_pic" class="device-input" style="height: 50px; margin-left: 20px"/>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+
+                        <h5>User Profile Details</h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-6 col-6">
+                                <label class="device-label">Username</label>
+                                <input class="device-input" name="user" value="{{ request.user }}"
+                                    disabled readonly/>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-10">
+                                <label class="device-label">Name_1</label>
+                                <input class="device-input" name="name_1" id="name_1" value="{{ form.name_1 }}" placeholder="Enter First Name"/>
+                            </div>
+                        
+                            <br>
+                            <div class="col-lg-6 col-sm-10">
+                                    <label class="device-label">Name_2</label>
+                                    <input class="device-input" name="name_2" id="name_2" value="{{ form.name_2 }}" placeholder="Enter Second Name"/>
+                                </div>
+                        </div>
+                        <br>
+                        <!--<div class="row">
+                            <div class="col-lg-6">
+                                <label class="device-label">Gender</label>
+                                <input class="device-input" name="gender" value="{{ form.gender }}" placeholder="Enter Gender"/>
+                            </div>
+                        </div>
+                        <br>
+                        <br>-->
+                        
+                        <h5>Contact Information</h5>
+                        <br>
+                        <div class="col-lg-6">
+                            <label class="device-label">Contact Number</label>
+                            <input class="device-input" name="contact_number" id="contact_number" value="{{ form.contact_number }}" placeholder="Enter Contact Number"/>
+                        </div>
+                        <br>
+                        <div class="col-lg-6">
+                            <label class="device-label">Email Address</label>
+                            <input class="device-input" name="email" id="email" value="{{ request.user.email }}" placeholder="Enter Email"/>
+                        </div>
+                        <br>
+                        <br>
+                       
+                        <h5>Delivery Address Information</h5>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label class="device-label">Address Line 1</label>
+                                <input class="device-input" name="address_line_1" id="address_line_1" placeholder="Enter Street address, P.O. box" value="{{ form.address_line_1 }}"/>
+
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="device-label">Address Line 2</label>
+                                <input class="device-input" name="address_line_2" id="address_line_2" placeholder="Apartment, suite , unit, building, floor, etc." value="{{ form.address_line_2 }}"/>
+
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label class="device-label">City / Town</label>
+                                <input class="device-input" name="city" id="city" placeholder="Enter city" value="{{ form.city }}"/>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="device-label">State / Province / Region</label>
+                                <input class="device-input" name="province" id="province" placeholder="Enter State/Province/Region" value="{{ form.province }}"/>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="device-label">Zip / Postal Code</label>
+                                <input class="device-input" name="postal_code" id="postal_code" placeholder="Enter Zip/Postal Code" value="{{ form.postal_code }}"/>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="device-label">Country</label>
+                                <input class="device-input" name="country" id="country" placeholder="Enter Country" value="{{ form.country }}"/>
+
+                            </div>
+
+                        </div>
+                        <br>
+                        <div class="input-screen-submit-div" >
+                            <button type="submit" class="input-screen-submit-btn">SAVE PROFILE</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+    </div>
+    </section>
+</body>
+<section class="footer">
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2022-2023 <a href="https://google.com">NeuraTech</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 1.1.0
+    </div>
+  </footer>  <!-- /.content-wrapper -->
+</section>

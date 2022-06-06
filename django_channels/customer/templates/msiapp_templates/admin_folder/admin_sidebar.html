@@ -1,0 +1,167 @@
+{% load static %}
+
+ <!-- Main Sidebar Container -->
+ <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="{% url 'dashboard' %}" class="brand-link">
+      <img src="{% static 'dist/img/logo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8" href="{% url 'dashboard' %}">
+      <span class="brand-text font-weight-light">Neuro Technologies</span>
+   
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          {% if request.user.customer.profile_pic %}
+
+          <img alt="image" src="../media/{{ request.user.customer.profile_pic }}" class="rounded-circle mr-2" style="height:30px; ">
+          {% else %}
+    
+          <img alt="image" src="{% static '/img/avatar/avatar-1.png' %}" class="rounded-circle mr-1">
+          {% endif %}
+        </div>
+        <div class="info">
+          <a href="{% url 'admin_user_profile' %}" class="d-block">{{ request.user }}</a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+               <li class="nav-item menu-open">
+            
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'dashboard' %}" class="nav-link">
+
+                  <i class="nav-icon fas fa-tachometer-alt" ></i>
+                  <p>Dashboard</p>
+                </a>
+              </li>
+            </ul>
+            <!-- End Dashboard Heading  -->
+
+          <!-- Customer  -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Customer
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'admin_add_customer' %}" class="nav-link">
+                  <i class="far fa-face nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Customer</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'admin_list_customer' %}" class="nav-link">
+                  <i class="far fa-face nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>List Customer</p>
+                </a>
+              </li>
+              
+             </ul>           
+            
+          </li>
+          <!-- End Customer  -->
+
+          <!-- Device  -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Device
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'admin_add_device' %}" class="nav-link">
+                  <i class="far fa-face nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Device</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'admin_list_device' pk=1 %}" class="nav-link">
+                  <i class="far fa-face nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>List Device</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- End Device  -->
+
+          <!-- Enquiry Reports  -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Enquiry Report
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'admin_navbar_search' %}" class="nav-link">
+                  <i class="far fa-face nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Energy Cost Report</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'admin_energy_usage_report' %}" class="nav-link">
+                  <i class="far fa-face nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Energy Usage Report</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'store_procedure' %}" class="nav-link">
+                  <i class="far fa-face nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Store Procedure Test</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- End Enquiry Reports  -->
+
+            <!--Charts 
+            <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+                Charts
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'charts' %}" class="nav-link">
+                  <i class="far fa-face nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Charts</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+           End Charts  -->
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

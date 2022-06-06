@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neura | User Profile</title>
+
+  {% load static %}
+
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <section class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <form action="" method="post" enctype="multipart/form-data" id="myform">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-4" style="margin: 10px;">
+                            {% if form.profile_pic %}
+                            <div class="card card-body">
+                                <img class="card-img-top" src="/media/{{ form.profile_pic }}" alt="Card image cap" >
+                            </div>
+                            {% else %}
+                                <img  src="{% static '/img/avatar/avatar-1.png' %}" style="height: 150px; margin-left: 20px">
+                            {% endif %}
+                        </div>
+                        <div class="col-4" style="margin: 10px;">
+                            <label>Select Profile Pic</label>
+                            <input type="file" name="profile_pic" class="form-control select_media" style="height: 50px; margin-left: 20px"/>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        <h5>User Profile Details</h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-6 col-6">
+                                <label>Username</label>
+                                <input class="form-control" name="user" value="{{ form.user }}"
+                                    disabled readonly/>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-10">
+                                <label>Name_1</label>
+                                <input class="form-control" name="name_1" value="{{ form.name_1 }}" placeholder="Enter First Name"/>
+                            </div>
+                        
+                            <br>
+                            <div class="col-lg-6 col-sm-10">
+                                    <label>Name_2</label>
+                                    <input class="form-control" name="name_2" value="{{ form.name_2 }}" placeholder="Enter Second Name"/>
+                                </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Gender</label>
+                                <input class="form-control" name="gender" value="{{ form.gender }}" placeholder="Enter Gender"/>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        
+                        <h5>Contact Information</h5>
+                        <br>
+                        <div class="col-lg-6">
+                            <label>Contact Number</label>
+                            <input class="form-control" name="contact_number" value="{{ form.contact_number }}" placeholder="Enter Contact Number"/>
+                        </div>
+                        <br>
+                        <div class="col-lg-6">
+                            <label>Email Address</label>
+                            <input class="form-control" name="email" value="{{ form.email }}" placeholder="Enter Email"/>
+                        </div>
+                        <br>
+                        <br>
+                       
+                        <h5>Delivery Address Information</h5>
+                        <br>
+                        <div class="row">
+                            {% if form.address_line_1 %}
+                            <div class="col-lg-6">
+                                <label>Address Line 1</label>
+                                <input class="form-control" name="address_line_1" placeholder="Enter Street address, P.O. box" value="{{ form.address_line_1 }}"/>
+
+                            </div>
+                            {% else %}
+                            <div class="col-lg-6">
+                                <label>Address Line 1</label>
+                                <input class="form-control" name="address_line_1" placeholder="Enter Street address, P.O. box" />
+
+                            </div>
+                            {% endif %}
+
+                            {% if form.address_line_2 %}
+                            <div class="col-lg-6">
+                                <label>Address Line 2</label>
+                                <input class="form-control" name="address_line_2" placeholder="Apartment, suite , unit, building, floor, etc." value="{{ form.address_line_2 }}"/>
+
+                            </div>
+                            {% else %}
+                            <div class="col-lg-6">
+                                <label>Address Line 2</label>
+                                <input class="form-control" name="address_line_2" placeholder="Apartment, suite , unit, building, floor, etc." />
+
+                            </div>
+                            {% endif %}
+                        </div>
+                        <br>
+                        <div class="row">
+                            {% if form.city != None %}
+                            <div class="col-lg-6">
+                                <label>City / Town</label>
+                                <input class="form-control" name="city" placeholder="Enter city" value="{{ form.city }}"/>
+
+                            </div>
+                            {% else %}
+                            <div class="col-lg-6">
+                                <label>City / Town</label>
+                                <input class="form-control" name="city" placeholder="Enter City/Town" />
+
+                            </div>
+                            {% endif %}
+
+                            {% if form.province != None %}
+                            <div class="col-lg-6">
+                                <label>State / Province / Region</label>
+                                <input class="form-control" name="province" placeholder="Enter State/Province/Region" value="{{ form.province }}"/>
+
+                            </div>
+                            {% else %}
+                            <div class="col-lg-6">
+                                <label>State / Province / Region</label>
+                                <input class="form-control" name="province" placeholder="Enter State/Province/Region" />
+
+                            </div>
+                            {% endif %}
+
+                            {% if form.postal_code != None %}
+                            <div class="col-lg-6">
+                                <label>Zip / Postal Code</label>
+                                <input class="form-control" name="postal_code" placeholder="Enter Zip/Postal Code" value="{{ form.postal_code }}"/>
+
+                            </div>
+                            {% else %}
+                            <div class="col-lg-6">
+                                <label>Zip / Postal Code</label>
+                                <input class="form-control" name="postal_code" placeholder="Enter Zip/Postal Code" />
+
+                            </div>
+                            {% endif %}
+
+                            {% if form.country != None %}
+                            <div class="col-lg-6">
+                                <label>Country</label>
+                                <input class="form-control" name="country" placeholder="Enter Country" value="{{ form.country }}"/>
+
+                            </div>
+                            {% else %}
+                            <div class="col-lg-6">
+                                <label>Country</label>
+                                <input class="form-control" name="country" placeholder="Enter Country" />
+
+                            </div>
+                            {% endif %}
+                        </div>
+                        <br>
+                        <div class="row">
+                            <button type="submit" class="btn btn-primary btn-block submit_btn">SAVE PROFILE</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+    </div>
+    </section>
+</div>
+<section class="footer">
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2022-2023 <a href="https://google.com">NeuraTech</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 1.1.0
+    </div>
+  </footer>  <!-- /.content-wrapper -->
+</section>

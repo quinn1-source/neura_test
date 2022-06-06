@@ -1,0 +1,13 @@
+
+* {
+    outline: 1px red solid;
+  }
+
+
+ .container-signup{
+    width: 50rem;
+    height: 50rem;
+    border: 15px solid green;
+    align-items: center;
+}
+

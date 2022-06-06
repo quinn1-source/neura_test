@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neura Dashboard</title>
+    {% load static %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="{% static 'dashboard/css/style9.css' %}">
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body>
+    <div class="container">
+        <aside>
+            <div class="top">
+                <div class="logo">
+                   <!-- <img src="{% static 'dashboard/images/dummy_image.png' %}"> -->
+                   <img src="{% static 'dashboard/images/photo.jpg' %}"> 
+                    <h2>Neu<span class="danger">ra</span></h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <span class="material-icons-sharp">close</span>
+                </div>
+            </div>
+                <!--Sidebar After Logo-->
+                <div class="sidebar">
+                    <a href="#">
+                        <span class="material-icons-sharp">grid_view</span>
+                        <h3>Dashboard</h3>
+                    </a>
+                    <a href="#" class="active" >
+                        <span class="material-icons-sharp">home</span>
+                        <h3>Home</h3>
+                    </a>
+                    <a href="#" onclick="contactUsPayloadFieldShow('field_populate', 'service_history')">
+                        <span class="material-icons-sharp">help</span>
+                        <h3>Service History</h3>
+                    </a>
+                    <a href="#" onclick="contactUsPayloadFieldShow('field_populate', 'inbox')">
+                        <span class="material-icons-sharp">inbox</span>
+                        <h3>Inbox</h3>
+                        <span class="message-count" id="unreadMessageCount" value=""></span>
+                    </a>
+                    <a href="#" onclick="contactUsPayloadFieldShow('field_populate', 'contact')">
+                        <span class="material-icons-sharp" >support_agent</span>
+                        <h3>Contact</h3>
+                    </a>
+
+                    <a href="#" onclick="contactUsPayloadFieldShow('field_populate', 'about_us')">
+                        <span class="material-icons-sharp">info</span>
+                        <h3>About Us</h3>
+                    </a>
+                    <a href="#" onclick="contactUsPayloadFieldShow('field_populate', 'settings')">
+                        <span class="material-icons-sharp">settings</span>
+                        <h3>Settings</h3>
+                    </a>
+                    <a href="#" onclick="contactUsPayloadFieldShow('field_populate', 'terms')">
+                        <span class="material-icons-sharp">privacy_tip</span>
+                        <h3>Ts&Cs</h3>
+                    </a>
+                    <a href="#" onclick="contactUsPayloadFieldShow('field_populate', 'user_profile')">
+                        <span class="material-icons-sharp">support_agent</span>
+                        <h3>User Profile</h3>
+                    </a>
+                    <a href="#" onclick="contactUsPayloadFieldShow('field_populate', 'device')">
+                        <span class="material-icons-sharp">computer</span>
+                        <h3>Device</h3>
+                    </a>
+
+                    <a href="{% url 'logout' %}">
+                        <span class="material-icons-sharp">logout</span>
+                        <h3>Logout</h3>
+                    </a>
+                </div>
+
+        </aside>
+        <!------------------------------- END ASIDE : SIDE OF SIDEBAR ------------------>
+        <main>
+            
+            <h1>Dashboard</h1>
+            <br>
+            <div class="about-screen" id="about-screen" display="none" hidden>
+                {% include 'snippets/about_us.html' %}
+            </div>
+
+            <div class="settings-screen" id="settings-screen" display="none" hidden>
+                {% include 'snippets/settings.html' %}
+            </div>
+            <div class="inbox-screen" id="inbox-screen" display="none" hidden>
+                {% include 'snippets/inbox.html' %}
+            </div>
+            <div class="inbox-read-screen" id="inbox-read-screen" display="none" hidden>
+                {% include 'snippets/inbox_read.html' %}
+            </div>
+            <div class="terms-screen" id="terms-screen" display="none" hidden>
+                {% include 'snippets/terms_dashboard.html' %}
+            </div>
+            <div class="device" id="device" display="none" hidden>
+                {% include 'msiapp_templates/customer_device_add.html' %}
+            </div>
+
+            <div class="user-profile" id="user-profile" display="none" hidden>
+                {% include 'snippets/user_profile_dashboard.html' %}
+            </div>
+
+            <div class="device-list" id="device-list" display="none" hidden>
+                {% include 'msiapp_templates/customer_device_list.html' %}
+            </div>
+            <div class="input-screen" id="input-screen" display="none" hidden>
+                {% include 'snippets/contact_us.html' %}
+
+            </div>
+            <!-------------------- START OF INSIGHT ------------------------>
+            <div class="error-messages">
+                {% if messages %}
+                <div>
+                <strong>Messages:</strong>
+                <ul>
+                    {% for message in messages %}
+                    <li>{{message}}</li>
+                    {% endfor %}
+                </ul>
+                </div>
+                {% endif %}
+            </div>
+            <div id="insights" class="insights">
+                <!-------------------- START OF SALES ------------------------>
+                <div id="sales" class="sales">
+                    <span class="material-icons-sharp">analytics</span>
+                    <div class="middle">
+                        <div class="left">
+                            <h3>Total Power In Currency</h1>
+                            <h1 id="totalCurrency"></h1>
+                        </div>
+                        <div class="progress">
+                            <a  class="button1 bouncy" onclick="getEnquiryInfo('daily', 'currency')">Daily</a>
+                            <a href="#" class="button1 bouncy" style="animation-delay:0.07s" onclick="getEnquiryInfo('weekly', 'currency')">Weekly</a>
+                            <a href="#" class="button1 bouncy" style="animation-delay:0.14s" onclick="getEnquiryInfo('monthly', 'currency')">Monthly</a>
+                        </div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <!-------------------- END OF SALES ------------------------>
+
+                <!-------------------- START OF EXPENSES ------------------------>
+                <div id="expenses" class="expenses">
+                    <span class="material-icons-sharp">data_exploration</span>
+                    <div class="middle">
+                        <div class="left">
+                            <h3>Total Power In Kwh</h1>
+                            <h1 id="totalElectricity">25kw</h1>
+                        </div>
+                        <div class="progress">
+                            <a href="#" class="button1 bouncy" onclick="getEnquiryInfo('daily', 'output')">Daily</a>
+                            <a href="#" class="button1 bouncy" style="animation-delay:0.07s" onclick="getEnquiryInfo('weekly', 'output')">Weekly</a>
+                            <a href="#" class="button1 bouncy" style="animation-delay:0.14s" onclick="getEnquiryInfo('monthly', 'output')">Monthly</a>
+                        </div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <!-------------------- END OF EXPENSES ------------------------>
+
+                <!-------------------- START OF income ------------------------>
+                <div id="income" class="income">
+                    <span class="material-icons-sharp">stacked_line_chart</span>
+                    <div class="middle">
+                        <div class="left">
+                            <h3>Projection</h1>
+                            <h1>Awaiting Information</h1>
+                        </div>
+                        <div class="progress">
+                            <a href="#" class="button1 bouncy" onclick="getEnquiryInfo('weekly', 'output')">Daily</a>
+                            <a href="#" class="button1 bouncy" style="animation-delay:0.07s" onclick="getEnquiryInfo('weekly', 'output')">Weekly</a>
+                            <a href="#" class="button1 bouncy" style="animation-delay:0.14s" onclick="getEnquiryInfo('weekly', 'output')">Monthly</a>
+                        </div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <!-------------------- END OF SALES ------------------------>
+            </div>
+            <!-------------------- END OF INSIGHT ------------------------>
+
+            <!-------------------- START OF RECENT ORDERS ------------------------>
+            
+            <div class="recent-orders" id="recent-orders" display="none" hidden>
+                <h2>Recent Orders</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Product Number</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                                              
+                    </tbody>
+                </table>
+                <a href="#">Show All</a>
+            </div>
+            <!-------------------- END OF RECENT ORDERS ------------------------>
+
+            <!-------------------- START OF Chart ------------------------>
+            <form id="dateForm" display="none" >
+                <input id="node" hidden>
+                <div class="date-container">
+                    <div id="meter-dropdown" class="dropdown-type">
+                        <!--<label class='dropdown-type' for="Type">Choose Meter Type:</label>-->
+
+                        <select class='chart-dropdown' name="meter" id="meter">
+                            <option type="submit" value="Electricity">Electricity</option>
+                            <option type="submit" value="Water">Water</option>
+                            <option type="submit" value="All">All</option>
+                        </select>
+                    </div>
+                    <div class="date-row">
+                        <div class="date">
+                            <input  type="date" id="fromDate">
+                        </div>
+                        <div class="date" >
+                            <input  type="date" id="toDate">
+                        </div>
+                        <div class="chart-date-btn" id="dateFormSubmit" hidden>
+                            <button type="submit" class="input-screen-submit-btn" id="date-submit-btn" >send</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+            <div class="chart-top-btn-container" id="chart-top-btn-container" display="block">
+                
+                <div class="chart-print-chart-div">
+                    <button class='chart-print-chart-btn' onclick="chartType('line')">Line Chart</button>
+                </div>
+                <div class="chart-print-chart-div">
+                    <button class='chart-print-chart-btn' onclick="chartType('bar')">Bar Chart</button>
+                </div>
+                <div class="chart-print-chart-div">
+                    <button class='chart-print-chart-btn' onclick="downloadChart()">Save Chart</button>
+                </div>
+                <div class="chart-print-chart-div">
+                    <a class='chart-print-chart-btn' type="submit" id="saveInput" href="neura.dyndns.org:8091">Trading Report</a>
+                </div>
+                <div class="chart-print-chart-div">
+                <select class='chart-dropdown' name="number_points" id="numberPoints" onchange="displayPoints()">
+                    <option >Display Points</option>
+                    <option type="submit" value=10>10</option>
+                    <option type="submit" value=30>30</option>
+                    <option type="submit" value=50>50</option>
+                    <option type="submit" value=100>100</option>
+                </select>
+                </div>
+            </div>
+
+
+            <div id="chart" class="chart">
+                <canvas id="myChart"></canvas>
+            </div>
+            <!-------------------- End OF Chart ------------------------>
+            <br>
+            <br>
+            <hr>
+
+        </main>
+        <!-------------------- END OF MAIN ------------------------>
+
+        <!-------------------- START OF RIGHT SIDE ------------------------>
+        <div class="right">
+            <!-------------------- START OF TOP/PROFILE PART ------------------------>
+            <div class="top">
+                <button id="menu-btn">
+                    <span class="material-icons-sharp">menu</span>
+                </button>
+                <div class="theme-toggler">
+                    <span class="material-icons-sharp active">light_mode</span>
+                    <span class="material-icons-sharp">dark_mode</span>
+                </div>
+                <div class="profile">
+                    <div class="info">
+                        <p>Hey, <b id="userName" value="{{ request.user }}">{{request.user }}</b></p>
+                        <small class="text-muted">{{request.user.id}}, put in the group</small>
+                    </div>
+                    <div class="profile-photo">
+                        <img src="{{request.user.profile_image.url}}" alt="">
+                    </div>
+                </div>
+            </div>
+            <!-------------------- END OF TOP/PROFILE PART ------------------------>
+            <!-------------------- START OF SALES ANALYTICS ------------------------>
+
+            <div class="sales-analytics">
+                <table class="search-table" id="search-table" hidden>
+                    <tbody class="search-table-body"></tbody>
+        
+                </table>
+
+                <h2>Search Types</h2>
+                <div class="item online" id="concession" onclick="clickMeConcession()">
+                    <div class="icon">
+                        <span class="material-icons-sharp">shopping_cart</span>
+                    </div>
+                    <div class="right">
+                        <div class="info">
+                            <h3>Concession Area</h3>
+                            <small class="text-muted">Click To Update</small>
+                        </div>
+                        <!--<h5 class="success">+39%</h5>
+                        <h3>3849</h3>-->
+                    </div>
+                </div>
+                <div class="item offline" id="location" onclick="clickMeLocation()">
+                    <div class="icon">
+                        <span class="material-icons-sharp">local_mall</span>
+                    </div>
+                    <div class="right">
+                        <div class="info">
+                            <h3>Location</h3>
+                            <small class="text-muted" >Click To Update</small>
+                        </div>
+                        <!--<h5 class="danger">-17%</h5>
+                        <h3>1100</h3>-->
+                    </div>
+                </div>
+
+                <div class="item customers" id="gateway" onclick="clickMeGateway()">
+                    <div class="icon">
+                        <span class="material-icons-sharp">person</span>
+                    </div>
+                    <div class="right">
+                        <div class="info">
+                            <h3>Gateway</h3>
+                            <small class="text-muted">Click To Update</small>
+                        </div>
+                        <!--<h5 class="success">+25%</h5>
+                        <h3>849</h3>-->
+                    </div>
+                </div>
+
+                <div class="item customers" id="node" onclick="clickMeNode()" display="block">
+                    <div class="icon">
+                        <span class="material-icons-sharp">person</span>
+                    </div>
+                    <div class="right">
+                        <div class="info">
+                            <h3>Nodes</h3>
+                            <small class="text-muted">Click To Update</small>
+                        </div>
+                        <!--<h5 class="success">+25%</h5>
+                        <h3>849</h3>-->
+                    </div>
+                </div>
+            
+                <input id="my_value" hidden>
+                <input id="my_date" hidden>
+            </div>
+            <hr>
+            <hr>
+            <!-------------------- END OF SALES ANALYTICS ------------------------>
+            
+            <!------------------ START OF RECENT UPDATES PART ------------------------>
+            <div class="concessionList" id="concessionList">
+                
+            </div>
+            <div class="locationList" id="locationList">
+                
+            </div>
+            <div class="gatewayList" id="gatewayList">
+                
+            </div>
+            <div class="nodeList" id="nodeList">
+                
+            </div>
+
+            <div class="item add-product" onclick="getEnquiryInfo('daily', 'currency')">
+                <div>
+                    <span class="material-icons-sharp">add</span>
+                    <h3>Update Chart</h3>
+                </div>
+            </div>
+            <!-------------------- END OF RECENT UPDATES PART ------------------------>
+
+           
+        </div>
+        <!-------------------- END OF RIGHT SIDE ------------------------>
+    </div>
+    <script src="{% static 'dashboard/js/index.js' %}"></script>
+    <script src="{% static 'dashboard/js/contact.js' %}"></script>
+    <script src="{% static 'dashboard/js/chart1.js' %}"></script>
+    <script src="{% static 'dashboard/js/inbox.js' %}"></script>
+<script>
+    const userName = document.getElementById('userName').innerText;
+    setupWebSocket();
+	function setupWebSocket(){
+        
+        // Initialize Socket and close any open ones before starting again
+        try {
+
+            if (dashSocket) {
+                    closeWebSocket()
+                function closeWebSocket(){
+                    if(dashSocket != null){
+                        dashSocket.close()
+                        dashSocket = null
+                        clearChatLog()
+                        setPageNumber("1")
+                        disableChatLogScrollListener()
+                        // close previous socket if one is open
+                        
+                    }
+                }
+            }
+        }
+        catch(err) {
+            console.log('Pass')
+
+        }
+            
+		console.log("setupWebSocket: " + userName)
+
+		// Correctly decide between ws:// and wss://
+		var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+		{% if debug_mode %}
+			var ws_path = ws_scheme + '://' + window.location.host + "/dashboard/" + userName + "/"; // development
+		{% else %}
+			var ws_path = ws_scheme + '://' + window.location.host + ":8001/dashboard/index_dashboard/" + userName + "/"; // production
+		{% endif %}
+
+		// console.log("Connecting to " + ws_path);
+		dashSocket = new WebSocket(ws_path);
+        
+		// Handle incoming messages
+		dashSocket.onmessage = function(message) {
+            
+			// Decode the JSON
+			// console.log("Got dash websocket message " + message.data);
+			console.log("Got websocket message.");
+			var data = JSON.parse(message.data);
+
+            //==============================================================================================================
+            if (data.messages_payload == 'contact_us_type') {
+                //document.getElementById("input-screen").style.transition = 'all 300ms ease';
+                //document.getElementById("input-screen").style.display = "block";
+            } else if (data.messages_payload == 'start_get_contact_us_message') {
+                var data = JSON.parse(message.data);
+                document.getElementById("unreadMessageCount").innerHTML = data.unread_message_count
+                              
+            } else if (data.messages_payload == 'returned_user_profile_data') {
+                var data = JSON.parse(message.data);
+                var payload = JSON.parse(data.payload);
+                
+                document.getElementById('name_1').value = payload[0];
+                document.getElementById('name_2').value = payload[1];
+                document.getElementById('contact_number').value = payload[2];
+                document.getElementById('email').value = payload[3];
+                document.getElementById('address_line_1').value = payload[4];
+                document.getElementById('address_line_2').value = payload[5];
+                document.getElementById('city').value = payload[6];
+                document.getElementById('province').value = payload[7];
+                document.getElementById('postal_code').value = payload[8];
+                document.getElementById('country').value = payload[9];
+
+            } else if (data.messages_payload == 'customer_monitoring_data') {            
+                //var data = JSON.parse(message.data);
+                var returned_date_list = JSON.parse(data.returned_date_list);
+                var returned_value_list = JSON.parse(data.returned_value_list);
+                var sum_currency_value = JSON.parse(data.sum_currency_value);
+                var sum_elect_value = JSON.parse(data.sum_elect_value);
+                document.getElementById('my_date').value = ''
+                document.getElementById('my_value').value = ''
+                document.getElementById('my_date').value = returned_date_list
+                document.getElementById('my_value').value = returned_value_list
+                var number_returned_value_list = Number(returned_value_list);
+                
+                document.getElementById("totalCurrency").innerHTML = 'R' + sum_currency_value;
+                document.getElementById("totalElectricity").innerHTML = 'kWh' + sum_elect_value;
+
+                customer_monitoring_data_chat(returned_date_list, returned_value_list);
+                
+                //Chart display============================================================================>
+
+            } else if (data.messages_payload == "returned_inbox_data") {
+                const tbodyEl = document.querySelector('tbody');
+                var data = JSON.parse(message.data);
+                var payload = JSON.parse(data.payload);
+                tbodyEl.innerHTML = ''
+                for (let i = 0; i < payload[i].length; i++){
+                    tbodyEl.innerHTML += `
+                        <tr>
+                            <td class="row-data" id="inboxFromUser">${payload[1][i]}</td>
+                            <td class="row-data" id="inboxMessage">${payload[2][i]}</td>
+                            <td class="row-data" id="inboxDate">${payload[3][i]}</td>
+                            <td class="row-data" id="inboxReadFlag">${payload[4][i]}</td>
+                            <td class="row-data" id="inboxMessageId" hidden>${payload[5][i]}</td>
+                            <td><button class="replyBtn row-data" id="readMessage" onclick="readMessageFunction(this, '{{request.user.username | safe}}')">Read</button></td>
+                            <td><button class="replyBtn row-data" onclick="replyTo(this, '{{request.user.username | safe}}')">Reply</button></td>
+                        </tr>
+                    `;
+                } 
+
+            } else if (data.messages_payload == "returned_inbox_data_read") {
+                var data = JSON.parse(message.data);
+                var payload = JSON.parse(data.payload);
+                document.getElementById("inboxReadFromUser").innerHTML = payload[0];
+                document.getElementById("inboxReadMessage").innerHTML = payload[2];
+                document.getElementById("inboxReadDate").innerHTML = payload[3];
+                document.getElementById("inboxReadMessageId").innerHTML = payload[4];
+                document.getElementById("inboxReadToUser").innerHTML = payload[5];
+
+                document.getElementById("device").style.display = "none";
+                document.getElementById("device").hidden = true;
+                document.getElementById("about-screen").style.display = "none";
+                document.getElementById("about-screen").hidden = true;
+                document.getElementById("input-screen").style.display = "none";
+                document.getElementById("input-screen").hidden = true;
+                document.getElementById("dateForm").hidden = true;
+                document.getElementById("insights").hidden = true;
+                document.getElementById("expenses").hidden = true;
+                document.getElementById("sales").hidden = true;
+                document.getElementById("income").hidden = true;
+                document.getElementById("meter-dropdown").hidden = true;
+                document.getElementById("meter-dropdown").style.display = "none";
+                document.getElementById("chart").hidden = true;
+                document.getElementById("user-profile").hidden = true;
+                document.getElementById("user-profile").style.display = "none";
+                document.getElementById("inbox-screen").hidden = true;
+                document.getElementById("inbox-screen").style.display = "none";
+                document.getElementById("inbox-read-screen").hidden = false;
+                document.getElementById("inbox-read-screen").style.display = "block";
+                document.getElementById("chart-top-btn-container").hidden = true;
+                document.getElementById("chart-top-btn-container").style.display = "none";
+                startUpGetContactUsNotifications()
+          
+            } else if (data.messages_payload == 'returned_enquiry_info') {            
+                //var data = JSON.parse(message.data);
+                var returned_date_list = JSON.parse(data.returned_date_list);
+                var returned_value_list = JSON.parse(data.returned_value_list);
+                var sum_currency_value = JSON.parse(data.sum_currency_value);
+                var sum_elect_value = JSON.parse(data.sum_elect_value);
+                document.getElementById('my_date').value = ''
+                document.getElementById('my_value').value = ''
+                document.getElementById('my_date').value = returned_date_list
+                document.getElementById('my_value').value = returned_value_list
+                var number_returned_value_list = Number(returned_value_list);
+                
+                document.getElementById("totalCurrency").innerHTML = 'R' + sum_currency_value;
+                document.getElementById("totalElectricity").innerHTML = 'kWh' + sum_elect_value;
+
+                customer_monitoring_data_chat(returned_date_list, returned_value_list);
+                
+                //Chart display============================================================================>
+
+            } else if (data.messages_payload == 'start_get_node_list_returned') {
+                var data = JSON.parse(message.data);
+                var my_concession = JSON.parse(data.concession);
+                var my_location = JSON.parse(data.location);
+                var my_gateway = JSON.parse(data.gateway);
+                var my_node = JSON.parse(data.node);
+                var my_nodeName = JSON.parse(data.node_name);
+                var my_nodeType = JSON.parse(data.node_type);
+
+                var concession = JSON.parse(data.set_concession);
+                var location = JSON.parse(data.set_location);
+                var gateway = JSON.parse(data.set_gateway);
+                var node = JSON.parse(data.set_node);
+                var nodeName = JSON.parse(data.set_node_name);
+                var nodeType = JSON.parse(data.set_node_type);
+
+                concessionLength = concession.length
+                locationLength = location.length
+                gatewayLength = gateway.length
+                nodeLength = node.length
+
+                const tbodyEl = document.querySelector('#search-table');
+                var data = JSON.parse(message.data);
+                var payload = JSON.parse(data.node);
+                tbodyEl.innerHTML = ''
+                console.log(payload[0])
+                for (let i = 0; i < node.length; i++){
+                    
+                    tbodyEl.innerHTML += `
+                        <tr>
+                            <td class="row-data" id="concessionTable">${my_concession[i]}</td>
+                            <td class="row-data" id="locationTable">${my_location[i]}</td>
+                            <td class="row-data" id="gatewayTable">${my_gateway[i]}</td>
+                            <td class="row-data" id="nodeTable">${my_node[i]}</td>
+                            <td class="row-data" id="nodeNameTable">${my_nodeName[i]}</td>
+                            <td class="row-data" id="nodeTypeTable">${my_nodeType[i]}</td>
+
+                        </tr>
+                    `;
+                }
+
+
+                if (concessionLength == 0) {
+                    document.getElementById("concession").hidden = true;
+                    document.getElementById("concession").style.display = 'none'
+                } else {
+                    let my_concession = '';
+                    for (let i = 0; i < concession.length; i++) {
+                        my_concession = concession[i];
+                        var checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = 'concessionId';
+                        checkbox.className = 'concessionId';
+                        checkbox.checked = true;
+                        checkbox.name = 'concession_id';
+                        //checkbox.onclick = checkConcessionBox();
+                        checkbox.value = my_concession;
+                        
+
+                        var label = document.createElement('label')
+                        label.htmlFor = my_concession;
+                        label.appendChild(document.createTextNode(my_concession));
+                        
+                        var br = document.createElement('br');
+ 
+                        var container = document.getElementById('concessionList');
+                        container.appendChild(checkbox);
+                        container.appendChild(label);
+                        container.appendChild(br);
+                        
+                    }
+                    var inputs = document.querySelectorAll('.concessionId');
+                    for (var i = 0; i < inputs.length; i++) {
+                        inputs[i].checked = true;
+                    }
+                };
+
+                if (locationLength == 0 ) {
+                    document.getElementById("location").hidden = true;
+                    document.getElementById("location").style.display = 'none'
+                }else {
+                    let my_location = '';
+                    for (let i = 0; i < location.length; i++) {
+                        my_location = location[i];
+                        var checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = 'locationId';
+                        checkbox.classList = 'locationId';
+                        checkbox.value = my_location;
+                        checkbox.checked = true;
+                        checkbox.name = 'location_id';
+   
+                        //checkbox.onclick = checkConcessionBox();
+
+                        var label = document.createElement('label')
+                        label.htmlFor = my_location;
+                        label.appendChild(document.createTextNode(my_location));
+                        
+                        var br = document.createElement('br');
+ 
+                        var container = document.getElementById('locationList');
+                        container.appendChild(checkbox);
+                        container.appendChild(label);
+                        container.appendChild(br);
+                        
+                    }
+                    if (concession != '') {
+                            container.hidden = true;
+                        }
+                    var inputs = document.querySelectorAll('#locationId');
+                    for (var i = 0; i < inputs.length; i++) {
+                        inputs[i].checked = true;
+                    };
+                };
+                if (gatewayLength == 0) {
+                    document.getElementById("gateway").hidden = true;
+                    document.getElementById("gateway").style.display = 'none';
+                }else {
+                    let my_gateway = '';
+                    for (let i = 0; i < gateway.length; i++) {
+                        my_gateway = gateway[i];
+                        var checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = 'gatewayId';
+                        checkbox.classList = 'gatewayId';
+                        checkbox.value = my_gateway;
+                        checkbox.checked = true;
+                        checkbox.name = 'gateway_id';
+                        //checkbox.onclick = checkConcessionBox();
+
+                        var label = document.createElement('label')
+                        label.htmlFor = my_gateway;
+                        label.appendChild(document.createTextNode(my_gateway));
+                        
+                        var br = document.createElement('br');
+ 
+                        var container = document.getElementById('gatewayList');
+                        container.appendChild(checkbox);
+                        container.appendChild(label);
+                        container.appendChild(br);
+                        if (location != '') {
+                            container.hidden = true;
+                        }
+                    }
+                    var inputs = document.querySelectorAll('#gatewayId');
+                    for (var i = 0; i < inputs.length; i++) {
+                        inputs[i].checked = true;
+                    };
+                };
+                if (nodeLength == 0) {
+                    document.getElementById("node").hidden = true;
+                    document.getElementById("node").style.display = 'none'
+                    
+                } else {
+                    let my_node = '';
+                    for (let i = 0; i < node.length; i++) {
+                        my_node = node[i];
+                        var checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.id = 'nodeId';
+                        checkbox.classList = 'nodeId';
+                        checkbox.name = 'node_id';
+                        checkbox.value = my_node;
+                        checkbox.checked = true;
+
+                        var label = document.createElement('label')
+                        label.htmlFor = my_node;
+                        label.appendChild(document.createTextNode(my_node));
+                        
+                        var br = document.createElement('br');
+ 
+                        var container = document.getElementById('nodeList');
+                        container.appendChild(checkbox);
+                        container.appendChild(label);
+                        container.appendChild(br);
+                    };
+                    if (gateway != '') {
+                            container.hidden = true;
+                    }
+                    var inputs = document.querySelectorAll('#nodeId');
+
+                    for (var i = 0; i < inputs.length; i++) {
+                       inputs[i].checked = true;
+                                             
+                    }
+                    
+   
+                };
+            };
+
+            
+			// Handle errors (ClientError)
+
+			if (data.error) {
+				console.error(data.error + ": " + data.message)
+				showClientErrorModal(data.message)
+				return;
+			}
+			// Handle joining (Client perspective)
+			if (data.join) {
+				console.log("Joining room " + data.join);
+				getUserInfo()
+				getRoomChatMessages()
+				enableChatLogScrollListener()
+			}
+			// Handle leaving (client perspective)
+			if (data.leave) {
+				// do nothing
+				console.log("Leaving room " + data.leave);
+			}
+
+			// user info coming in from backend
+			if(data.user_info){
+				handleUserInfoPayload(data.user_info)
+			}
+
+			// Handle getting a message
+			if (data.msg_type == 0 || data.msg_type == 1 || data.msg_type == 2) {
+				appendChatMessage(data, false, true)
+			}
+
+			/*/ new payload of messages coming in from backend
+			if(data.messages_payload){
+				handleMessagesPayload(data.messages, data.new_page_number)
+			}*/
+		};
+
+        /*
+		dashSocket.addEventListener("open", function(e){
+			console.log("dashSocket OPEN")
+			// join dash room
+			if("{{request.user.is_authenticated}}"){
+				dashSocket.send(JSON.stringify({
+					"command": "join",
+					"room": userName
+				}));
+			}
+		})
+        */
+		dashSocket.onclose = function(e) {
+			console.log('dash socket closed.');
+		};
+
+		dashSocket.onOpen = function(e){
+			console.log("dashSocket onOpen", e)
+		}
+
+		dashSocket.onerror = function(e){
+	        console.log('dashSocket error', e)
+	    }
+
+	    if (dashSocket.readyState == WebSocket.OPEN) {
+	    	console.log("dashSocket OPEN")
+            startUpGetContactUsNotifications()
+	    } else if (dashSocket.readyState == WebSocket.CONNECTING){
+	        console.log("dashSocket connecting...")
+	    }
+//end ws
+	}//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+//end ws
+    
+    function contactUsPayloadFieldShow(command, menuItem){
+        const my_display = document.getElementById("input-screen").style.display;
+        if (command == 'field_populate') {
+                if (menuItem == "contact") {                    
+                    var contactUsStyleDisplay = document.getElementById("input-screen").style.display;
+                     if (contactUsStyleDisplay == 'none' || contactUsStyleDisplay == '') {
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("input-screen").style.display = "block";
+                        document.getElementById("input-screen").hidden = false;
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("dateForm").hidden = true;
+                        document.getElementById("insights").hidden = true;
+                        document.getElementById("expenses").hidden = true;
+                        document.getElementById("sales").hidden = true;
+                        document.getElementById("income").hidden = true;
+                        document.getElementById("meter-dropdown").hidden = true;
+                        document.getElementById("chart").hidden = true;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = true;
+                        document.getElementById("chart-top-btn-container").style.display = "none";
+
+                    } else {
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("insights").hidden = false;
+                        document.getElementById("expenses").hidden = false;
+                        document.getElementById("sales").hidden = false;
+                        document.getElementById("income").hidden = false;
+                        document.getElementById("meter-dropdown").hidden = false;
+                        document.getElementById("chart").hidden = false;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = false;
+                        document.getElementById("chart-top-btn-container").style.display = "flex";
+                    }
+                } else if (menuItem == "about_us") {
+                    var aboutStyleDisplay = document.getElementById("about-screen").style.display
+                    if (aboutStyleDisplay == 'none' || aboutStyleDisplay == '') {
+                        console.log('why' + menuItem)
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("about-screen").style.display = "block";
+                        document.getElementById("about-screen").hidden = false;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = true;
+                        document.getElementById("insights").hidden = true;
+                        document.getElementById("expenses").hidden = true;
+                        document.getElementById("sales").hidden = true;
+                        document.getElementById("income").hidden = true;
+                        document.getElementById("meter-dropdown").hidden = true;
+                        document.getElementById("chart").hidden = true;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = true;
+                        document.getElementById("chart-top-btn-container").style.display = "none";
+
+                    } else {
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("insights").hidden = false;
+                        document.getElementById("expenses").hidden = false;
+                        document.getElementById("sales").hidden = false;
+                        document.getElementById("income").hidden = false;
+                        document.getElementById("meter-dropdown").hidden = false;
+                        document.getElementById("chart").hidden = false;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = false;
+                        document.getElementById("chart-top-btn-container").style.display = "flex";
+                    }
+                } else if (menuItem == "terms") {
+                    var aboutStyleDisplay = document.getElementById("terms-screen").style.display
+                    if (aboutStyleDisplay == 'none' || aboutStyleDisplay == '') {
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = true;
+                        document.getElementById("insights").hidden = true;
+                        document.getElementById("expenses").hidden = true;
+                        document.getElementById("sales").hidden = true;
+                        document.getElementById("income").hidden = true;
+                        document.getElementById("meter-dropdown").hidden = true;
+                        document.getElementById("chart-top-btn-container").hidden = true;
+                        document.getElementById("chart-top-btn-container").style.display = "none";
+                        document.getElementById("chart").hidden = true;
+                        document.getElementById("terms-screen").style.display = "block";
+                        document.getElementById("terms-screen").hidden = false;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = true;
+                        document.getElementById("chart-top-btn-container").style.display = "none";
+                    } else {
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("insights").hidden = false;
+                        document.getElementById("expenses").hidden = false;
+                        document.getElementById("sales").hidden = false;
+                        document.getElementById("income").hidden = false;
+                        document.getElementById("chart-top-btn-container").hidden = false;
+                        document.getElementById("chart-top-btn-container").style.display = "flex";
+                        document.getElementById("meter-dropdown").hidden = false;
+                        document.getElementById("chart").hidden = false;
+                        document.getElementById("terms-screen").style.display = "none";
+                        document.getElementById("terms-screen").hidden = true;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = false;
+                        document.getElementById("chart-top-btn-container").style.display = "flex";
+                    }
+                } else if (menuItem == "device") {
+                    var aboutStyleDisplay = document.getElementById("device").style.display
+                    if (aboutStyleDisplay == 'none' || aboutStyleDisplay == '') {
+                        console.log('why' + menuItem)
+                        document.getElementById("device").style.display = "block";
+                        document.getElementById("device").hidden = false;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = true;
+                        document.getElementById("insights").hidden = true;
+                        document.getElementById("expenses").hidden = true;
+                        document.getElementById("sales").hidden = true;
+                        document.getElementById("income").hidden = true;
+                        document.getElementById("meter-dropdown").hidden = true;
+                        document.getElementById("chart").hidden = true;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = true;
+                        document.getElementById("chart-top-btn-container").style.display = "none";
+
+                    } else {
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("insights").hidden = false;
+                        document.getElementById("expenses").hidden = false;
+                        document.getElementById("sales").hidden = false;
+                        document.getElementById("income").hidden = false;
+                        document.getElementById("meter-dropdown").hidden = false;
+                        document.getElementById("chart").hidden = false;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = false;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = false;
+                        document.getElementById("chart-top-btn-container").style.display = "flex";
+                    }
+                } else if (menuItem == "user_profile") {
+                    var userProfileDisplay = document.getElementById("user-profile").style.display
+                    if (userProfileDisplay == 'none' || userProfileDisplay == '') {
+                        getUserProfileData()
+                        console.log('why' + menuItem)
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = true;
+                        document.getElementById("insights").hidden = true;
+                        document.getElementById("expenses").hidden = true;
+                        document.getElementById("sales").hidden = true;
+                        document.getElementById("income").hidden = true;
+                        document.getElementById("meter-dropdown").hidden = true;
+                        document.getElementById("chart").hidden = true;
+                        document.getElementById("user-profile").hidden = false;
+                        document.getElementById("user-profile").style.display = "block";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = true;
+                        document.getElementById("chart-top-btn-container").style.display = "none";
+
+                    } else {
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("insights").hidden = false;
+                        document.getElementById("expenses").hidden = false;
+                        document.getElementById("sales").hidden = false;
+                        document.getElementById("income").hidden = false;
+                        document.getElementById("meter-dropdown").hidden = false;
+                        document.getElementById("chart").hidden = false;
+                        document.getElementById("meter-dropdown").hidden = true;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = false;
+                        document.getElementById("chart-top-btn-container").style.display = "flex";
+                    }
+                }else if (menuItem == "inbox") {
+                    var userProfileDisplay = document.getElementById("inbox-screen").style.display
+
+                    if (userProfileDisplay == 'none' || userProfileDisplay == '') {
+                        var my_user = "{{request.user.username | safe}}"
+                        var user_name  = ''
+                        user_name = my_user
+                        getInboxData(user_name)
+                        console.log('why' + menuItem)
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = true;
+                        document.getElementById("insights").hidden = true;
+                        document.getElementById("expenses").hidden = true;
+                        document.getElementById("sales").hidden = true;
+                        document.getElementById("income").hidden = true;
+                        document.getElementById("meter-dropdown").hidden = true;
+                        document.getElementById("meter-dropdown").style.display = "none";
+                        document.getElementById("chart").hidden = true;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = false;
+                        document.getElementById("inbox-screen").style.display = "block";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = true;
+                        document.getElementById("chart-top-btn-container").style.display = "none";
+                    } else {
+                        document.getElementById("device").style.display = "none";
+                        document.getElementById("device").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("about-screen").style.display = "none";
+                        document.getElementById("about-screen").hidden = true;
+                        document.getElementById("input-screen").style.display = "none";
+                        document.getElementById("input-screen").hidden = true;
+                        document.getElementById("dateForm").hidden = false;
+                        document.getElementById("insights").hidden = false;
+                        document.getElementById("expenses").hidden = false;
+                        document.getElementById("sales").hidden = false;
+                        document.getElementById("income").hidden = false;
+                        document.getElementById("meter-dropdown").hidden = false;
+                        document.getElementById("meter-dropdown").style.display = "flex";
+                        document.getElementById("chart").hidden = false;
+                        document.getElementById("user-profile").hidden = true;
+                        document.getElementById("user-profile").style.display = "none";
+                        document.getElementById("inbox-screen").hidden = true;
+                        document.getElementById("inbox-screen").style.display = "none";
+                        document.getElementById("inbox-read-screen").hidden = true;
+                        document.getElementById("inbox-read-screen").style.display = "none";
+                        document.getElementById("chart-top-btn-container").hidden = false;
+                        document.getElementById("chart-top-btn-container").style.display = "flex";
+                    }
+                } 
+                else {
+                    console.log('someshit')
+                }
+            }
+        };
+
+    //--------------------------------------------------------------------------------------------------
+
+    // MySql Data retrieval
+
+    dateForm.addEventListener('submit' , (e) => {
+        e.preventDefault()
+        var my_user = "{{request.user.username | safe}}"
+        var user_name  = ''
+        user_name = my_user
+        let dateForm = document.getElementById('dateForm')
+        let node = e.target.node.value
+        let fromDate = e.target.fromDate.value
+        let toDate = e.target.toDate.value
+        dashSocket.send(JSON.stringify({
+            "command": "customer_monitoring_data",
+            "node": node,
+            "fromDate": fromDate,
+            "toDate": toDate,
+            "user_name": user_name,
+        }))
+    });
+
+    //-------------- Get User Data ---------------------------------//
+    function getUserProfileData() {
+        var my_user = "{{request.user.username | safe}}"
+        var user_name  = ''
+        user_name = my_user
+        dashSocket.send(JSON.stringify({
+            "command": "get_user_profile_data",
+            "user_name": user_name,
+        }))
+    }
+    //--------------Frequency Chart Information GET ------------------//
+    function currencyDailyGet(frequency) {
+        var my_user = "{{request.user.username | safe}}";
+        var user_name  = '';
+        user_name = my_user;
+
+        let meterType= document.getElementById('meter').value;
+        let fromDate = document.getElementById('fromDate').value;
+        let toDate = document.getElementById('toDate').value;
+
+        dashSocket.send(JSON.stringify({
+            "command": "currency_data_get",
+            "meterType": meterType,
+            "frequency": frequency,
+            "fromDate": fromDate,
+            "toDate": toDate,
+            "user_name": user_name,
+        }));
+    };
+
+    //==================End Frequency Chart Information GET =============
+
+
+    var btn = document.getElementById('input-screen-submit-btn')
+    var my_user = "{{request.user.username | safe}}"
+    var user_name  = ''
+    user_name = my_user
+    // var user_name = JSON.parse(my_user); e.preventDefault()
+    let form = document.getElementById('contact-form')
+    form.addEventListener('submit' , (e) => {
+        e.preventDefault()
+        let message = e.target.message.value;
+        let send_to = e.target.inputScreenSendTo.value;
+        let relatedMessageId = e.target.relatedMessageId.value
+        dashSocket.send(JSON.stringify({
+            "command": "send",
+            "message": message,
+            "user_name": user_name,
+            "sent_to": send_to,
+            "related_message_id": relatedMessageId,
+        }))
+
+        document.getElementById("message").innerHTML = ''
+        document.getElementById("message").value = ''
+        //document.getElementById("recent-orders").style.transition = 'all 300ms ease';
+        //document.getElementById("recent-orders").style.display = "";
+        document.getElementById('input-screen').style.display = "none";
+        document.getElementById("input-screen").style.transition = 'all 300ms ease';
+        document.getElementById("input-screen").style.display = "none";
+        document.getElementById("input-screen").hidden = true;
+        document.getElementById("about-screen").hidden = false;
+        document.getElementById("dateForm").hidden = false;
+        document.getElementById("insights").hidden = false;
+        document.getElementById("expenses").hidden = false;
+        document.getElementById("sales").hidden = false;
+        document.getElementById("income").hidden = false;
+        document.getElementById("meter-dropdown").hidden = false;
+        document.getElementById("chart").hidden = false;
+    })
+    
+    setInterval(startUpGetContactUsNotifications, 10000)
+    
+    function getEnquiryInfo(frequency, output){
+        console.log(output)
+        console.log('output', output)
+        var my_user = "{{request.user.username | safe}}"
+        var user_name  = ''
+        user_name = my_user
+        var meterValue = document.getElementById('meter').value
+        let fromDate = document.getElementById('fromDate').value;
+        let toDate = document.getElementById('toDate').value;
+
+        if (meterValue == 'Electricity') {
+            meterValue = 0
+        } else if (meterValue == 'Water') {
+            meterValue = 1
+        } else {
+            meterValue = 3
+        }
+
+        var inputs = document.querySelectorAll('#nodeId');
+        var nodeArray = []
+        var my_index = 0
+        console.log('inputs.length '+ inputs.length)
+        for (var i = 0; i < inputs.length; i++) {
+            console.log('checked '+inputs[i].checked)
+            if (inputs[i].checked == true) {
+                nodeArray[my_index] = inputs[i].value
+                my_index += 1               
+            }
+        }
+
+        dashSocket.send(JSON.stringify({
+            "command": "getEnquiryInfo",
+            "user_name": user_name,
+            "frequency": frequency,
+            "currency_kwh": output,
+            "from_date": fromDate,
+            "meter_value": meterValue,
+            "to_date": toDate,
+            "node_array": nodeArray,
+        }))
+    };
+
+
+    function startUpGetContactUsNotifications(){
+        var my_user = "{{request.user.username | safe}}"
+        var user_name  = ''
+        user_name = my_user
+        dashSocket.send(JSON.stringify({
+            "command": "start_get_contact_us_message",
+            "user_name": user_name,
+            "message": 'default'
+        }))
+
+    
+    }
+    
+    function startUpGetNodeList(){
+        var my_user = "{{request.user.username | safe}}"
+        var user_name  = ''
+        user_name = my_user
+        dashSocket.send(JSON.stringify({
+            "command": "start_get_node_list",
+            "user_name": user_name,
+            
+        }))
+
+    
+    }
+
+    dashSocket.addEventListener("open", function(e){
+            startUpGetContactUsNotifications()
+			startUpGetNodeList()
+                // MySql Data retrieval
+
+        var my_user = "{{request.user.username | safe}}"
+        var user_name  = ''
+        user_name = my_user
+        let myDate = new Date()
+        var toDate = dateFormat(myDate)
+        let node = 20
+
+        //let lateDate = myDate.setDate(myDate.getDate() - 7);
+        lateDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) 
+        var fromDate = dateFormat(lateDate)
+
+        //let message = e.target.message.value
+        dashSocket.send(JSON.stringify({
+            "command": "customer_monitoring_data",
+            "node": node,
+            "fromDate": fromDate,
+            "toDate": toDate,
+            "user_name": user_name,
+        }))
+    })
+
+function dateFormat(myDate) {
+    console.log(myDate)
+    const yyyy = myDate.getFullYear();
+    let mm = myDate.getMonth() + 1; // Months start at 0!
+    let dd = myDate.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    theDate = dd + '/' + mm + '/' + yyyy;
+    console.log(theDate)
+    return theDate
+}
+
+function clickMeConcession() {
+    document.getElementById('concessionList').hidden = false;
+    document.getElementById('nodeList').hidden = true;
+    document.getElementById('gatewayList').hidden = true;
+    document.getElementById('locationList').hidden = true;
+    };
+
+function clickMeLocation() {
+        console.log('location')
+        document.getElementById('concessionList').hidden = true;
+        document.getElementById('nodeList').hidden = true;
+        document.getElementById('gatewayList').hidden = true;
+        document.getElementById('locationList').hidden = false;
+
+        var meterValue = document.getElementById('meter').value
+        console.log(meterValue)
+        var table = document.getElementById("search-table");
+        var concessionChecked = ''
+        var meterRow = []
+        my_index = 0
+        var inputs = document.querySelectorAll('#concessionId');
+        var Locationinputs = document.querySelectorAll('#locationId');
+        for (var i = 0, row; row = table.rows[i]; i++) {
+        //iterate through rows
+        //rows would be accessed using the "row" variable assigned in the for loop
+            var meter = ''
+            var nodeType = table.rows[i].cells[5].innerHTML;
+            var nodeName = table.rows[i].cells[4].innerHTML;
+            var node = table.rows[i].cells[3].innerHTML;
+            var gateway = table.rows[i].cells[2].innerHTML;
+            var location = table.rows[i].cells[1].innerHTML;
+            var concession = table.rows[i].cells[0].innerHTML;
+
+            if (meterValue == 'Electricity' && nodeType == 0) {
+               
+                meterRow[my_index] = concession+','+location+','+gateway+','+node+','+nodeName+','+nodeType
+                my_index += 1
+            }
+
+        }
+
+        
+            for (var i = 0; i < inputs.length; i++) {
+
+                if (inputs[i].checked != true) {
+                    for (var i = 0; i <= meterRow.length; i++) {
+                        var nodeType = table.rows[i].cells[5].innerHTML;
+                        var nodeName = table.rows[i].cells[4].innerHTML;
+                        var node = table.rows[i].cells[3].innerHTML;
+                        var gateway = table.rows[i].cells[2].innerHTML;
+                        var location = table.rows[i].cells[1].innerHTML;
+                        var concession = table.rows[i].cells[0].innerHTML;
+                        console.log(inputs[0].value)
+                        if (inputs[0].value == concession) {
+                            Locationinputs[i].checked = false;
+                        } else {
+                            Locationinputs[i].checked = true;
+                        }
+                    }
+                }
+            }
+            //}
+        }
+    
+
+    function clickMeGateway() {
+        document.getElementById('concessionList').hidden = true;
+        document.getElementById('nodeList').hidden = true;
+        document.getElementById('gatewayList').hidden = false;
+        document.getElementById('locationList').hidden = true;
+
+        var meterValue = document.getElementById('meter').value
+        console.log(meterValue)
+        var table = document.getElementById("search-table");
+        var concessionChecked = ''
+        var meterRow = []
+        my_index = 0
+        var inputs = document.querySelectorAll('#concessionId');
+        var Locationinputs = document.querySelectorAll('#locationId');
+        var gatewayInputs = document.querySelectorAll('#gatewayId');
+        for (var i = 0, row; row = table.rows[i]; i++) {
+        //iterate through rows
+        //rows would be accessed using the "row" variable assigned in the for loop
+            var meter = ''
+            var nodeType = table.rows[i].cells[5].innerHTML;
+            var nodeName = table.rows[i].cells[4].innerHTML;
+            var node = table.rows[i].cells[3].innerHTML;
+            var gateway = table.rows[i].cells[2].innerHTML;
+            var location = table.rows[i].cells[1].innerHTML;
+            var concession = table.rows[i].cells[0].innerHTML;
+
+            if (meterValue == 'Electricity' && nodeType == 0) {
+                meterRow[my_index] = concession+','+location+','+gateway+','+node+','+nodeName+','+nodeType
+                my_index += 1
+
+            } else if (meterValue == 'Water' && nodeType == 0) {
+                
+            }
+
+        }
+        
+        console.log('meterRowLength  ' + meterRow.length)
+
+        for (var i = 0; i < inputs.length; i++) {
+
+            if (i == 0) {
+                console.log('Locationinputs.length  ' + Locationinputs.length)
+            }
+            if (inputs[i].checked != true) {
+                for (var i = 0; i < inputs.length; i++) {
+                    var nodeType = table.rows[i].cells[5].innerHTML;
+                    var nodeName = table.rows[i].cells[4].innerHTML;
+                    var node = table.rows[i].cells[3].innerHTML;
+                    var gateway = table.rows[i].cells[2].innerHTML;
+                    var location = table.rows[i].cells[1].innerHTML;
+                    var concession = table.rows[i].cells[0].innerHTML;
+                    console.log('inputs[0].value', inputs[0].value)
+                    console.log('i ========>' + i)
+                    if (inputs[i].value == concession) {
+                        Locationinputs[i].checked = false;
+                    } else {
+                        Locationinputs[i].checked = true;
+                    }
+                }
+                i=0
+            }
+        }
+        for (var i = 0; i < Locationinputs.length; i++) {
+            if (Locationinputs[i].checked != true) {
+                console.log('Locationinputs[i].checked  '+Locationinputs[i].checked+ ' And I '+i)
+                for (var i = 0; i < meterRow.length; i++) {
+                    var nodeType = table.rows[i].cells[5].innerHTML;
+                    var nodeName = table.rows[i].cells[4].innerHTML;
+                    var node = table.rows[i].cells[3].innerHTML;
+                    var gateway = table.rows[i].cells[2].innerHTML;
+                    var location = table.rows[i].cells[1].innerHTML;
+                    var concession = table.rows[i].cells[0].innerHTML;
+                    console.log('i ========>' + i)
+                    console.log('gateway ========>' + gateway)
+                    console.log('gatewayInputs[i].value     ' +gatewayInputs[i].value)
+                    if (gatewayInputs[i].value == gateway && Locationinputs[i].checked != true) {
+                        console.log('i ========>' + i)
+                        console.log('gateway   ', gatewayInputs[i])
+                        gatewayInputs[i].checked = false;
+                    } else {
+                        console.log('i else========>' + i)
+                        console.log('gateway   ', gatewayInputs[i])
+                        gatewayInputs[i].checked = true;
+                    }
+                }
+            } else {
+                var nodeType = table.rows[i].cells[5].innerHTML;
+                var nodeName = table.rows[i].cells[4].innerHTML;
+                var node = table.rows[i].cells[3].innerHTML;
+                var gateway = table.rows[i].cells[2].innerHTML;
+                var location = table.rows[i].cells[1].innerHTML;
+                var concession = table.rows[i].cells[0].innerHTML;
+                console.log('i ========>' + i)
+                console.log('location ========>' + gateway)
+                console.log('gatewayInputs[i].value     ' +gatewayInputs[i].value)
+
+                if (gatewayInputs[i].value == gateway && Locationinputs[i].checked != true) {
+                    console.log('i else if========>' + i)
+                    console.log('gateway   else if', gatewayInputs[i])
+                    gatewayInputs[i].checked = true;
+                } else {
+                    console.log('i else else========>' + i)
+                    console.log('gateway  else else ', gatewayInputs[i])
+                    gatewayInputs[i].checked = false;
+                }
+            }
+        
+        }
+            //}
+    };
+
+
+    function clickMeNode() {
+        document.getElementById('concessionList').hidden = true;
+        document.getElementById('nodeList').hidden = false;
+        document.getElementById('gatewayList').hidden = true;
+        document.getElementById('locationList').hidden = true;
+    };
+
+function getSelectedData() {
+    document.getElementById('concessionList').hidden = false;
+    document.getElementById('nodeList').hidden = false;
+    document.getElementById('gatewayList').hidden = false;
+    document.getElementById('locationList').hidden = false;
+    var inputsConcession = document.querySelectorAll('.concessionId');
+    var ConcessionList = []
+    var c = 0
+    c
+    for (var i = 0; i < inputsConcession.length; i++){
+        if (inputsConcession[i].checked == true) {
+            ConcessionList[c] = inputsConcession[i].value
+        }
+        c += 1
+    }
+    console.log('ConcessionList=====' + ConcessionList)
+    var inputsLocation = document.querySelectorAll('.locationId');
+    var locationList = []
+    var c = 0
+    for (var i = 0; i < inputsLocation.length; i++){
+        if (inputsLocation[i].checked == true) {
+            locationList[c] = inputsLocation[i].value
+        }
+        c += 1
+    }
+    console.log('locationList=====' + locationList)
+    var inputsGateway = document.querySelectorAll('.gatewayId');
+    var gatewayList = []
+    var c = 0
+    for (var i = 0; i < inputsGateway.length; i++){
+        if (inputsGateway[i].checked == true) {
+            gatewayList[c] = inputsGateway[i].value
+        }
+        c += 1
+    }
+    console.log('gatewayList=====' + gatewayList)
+    var inputsNode = document.querySelectorAll('.nodeId');
+    console.log()
+    var nodeList = []
+    var c = 0
+    for (var i = 0; i < inputsNode.length; i++){
+        if (inputsNode[i].checked == true) {
+            nodeList[c] = inputsNode[i].value
+        }
+        c += 1
+    }
+    console.log('NodeList=====' + nodeList)
+    let fromDate = document.getElementById('fromDate').value;
+    let toDate = document.getElementById('toDate').value;
+
+    /*dashSocket.send(JSON.stringify({
+            "command": "get_selected_data",
+            "node": nodeList,
+            "gateway": gatewayList,
+            "location": location,
+            "concession": concession,
+            "toDate": toDate,
+            "fromDate": fromDate,
+            "user_name": user_name,
+        }))*/
+    
+    document.getElementById('concessionList').hidden = false;
+    document.getElementById('nodeList').hidden = true;
+    document.getElementById('gatewayList').hidden = true;
+    document.getElementById('locationList').hidden = true;
+}
+</script>
+
+</body>
+
+</html>
